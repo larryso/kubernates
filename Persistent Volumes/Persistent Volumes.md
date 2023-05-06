@@ -34,7 +34,10 @@ CREATE TABLE COMPANY(
 \q
 ```
 Restarting the above container and going back in you will notice \dt commands returning no tables. Since data is lost.
-
+```
+#exit container and rm container 
+docker rm -f <contaner id>
+```
 
 ## Refrence 
 
