@@ -18,7 +18,22 @@ docker exec -it <contaner id> bash
 # login to postgres
 psql --username=admin postgresdb
 
+#create a table
+CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY     NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+
+#show table
+\dt
+
+# quit 
+\q
 ```
+Restarting the above container and going back in you will notice \dt commands returning no tables. Since data is lost.
 
 
 ## Refrence 
