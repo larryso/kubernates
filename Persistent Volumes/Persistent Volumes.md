@@ -58,23 +58,40 @@ docker run -d --rm -v postges:/var/lib/postgresql/data -e POSTGRES_DB=postgresdb
 
 ## Kubernates Persistence Volume
 
+Persistent volume (PV) is a piece of storage provided by an administrator in a Kubernetes cluster. When a developer needs persistent storage for an application in the cluster, they request that storage by creating a persistent volume claim (PVC) and then mounting the volume to a path in the pod. Once that is done, the pod claims any volume that matches its requirements (such as size, access mode, and so on). An administrator can create multiple PVs with different capacities and configurations. It is up to the developer to provide a PVC for storage, and then Kubernetes matches a suitable PV with the PVC. If there is no PV to match the PVC, the StorageClass dynamically creates a PV and binds it to the PVC.
 
-Same can be demonstrated using Kubernetes
+It is important to note that Kubernetes does not restrict PVs to a namespace, which means that a pod in any namespace can claim a PV for storage.
 
+![](../img/kubernetes_pv.webp)
+
+Below is an example of a PersistentVolume YAML file used for creating persistent volume storage:
+
+``` yml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-volume
+spec:
+  capacity:
+   storage: 10Gi
+  accessModes:
+   - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data" ## the data that will be stored in host
+  storageClassName: hostpath
 ```
-cd .\kubernetes\persistentvolume\
+### Storage Class
 
-kubectl create ns postgres
-kubectl apply -n postgres -f ./postgres-no-pv.yaml
-kubectl -n postgres get pods 
-kubectl -n postgres exec -it postgres-0 bash
+Provisioner of kubernetes Storage, help kubernets interface with storage 
 
-# run the same above mentioned commands to create and list the database table
+[https://kubernetes.io/docs/concepts/storage/storage-classes/](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 
-kubectl delete po -n postgres postgres-0
+### Persistence Volume Clain (PVC)
 
-# exec back in and confirm table does not exist.
-```
+kubernetes send request for sotrage 
+unlike PV, PVC is namespace bind
+
+[https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)
 
 ## Refrence 
 
@@ -87,3 +104,5 @@ kubectl delete po -n postgres postgres-0
 [Docker Storage](https://docs.docker.com/storage/)
 
 [git-kubernetes](https://github.com/marcel-dempers/docker-development-youtube-series)
+
+[https://kamsjec.medium.com/kubernetes-persistent-volumes-and-persistent-volume-claim-5148338120e4](https://kamsjec.medium.com/kubernetes-persistent-volumes-and-persistent-volume-claim-5148338120e4)
