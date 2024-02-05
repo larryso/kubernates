@@ -1,5 +1,5 @@
 # Service resources 
-
+![](../img/kubernates.webp)
 An abstract way to expose an application running on a set of Pods as a network service.
 
 Each Pod gets its own IP address, however in a Deployment, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.
@@ -65,9 +65,64 @@ KUBERNETES_SERVICE_HOST=10.0.0.1
 MY_NGINX_SERVICE_PORT=80
 KUBERNETES_SERVICE_PORT_HTTPS=443
 
+### Service Type
+There are four types of Kubernetes services — ClusterIP, NodePort, LoadBalancer and ExternalName. The type property in the Service's spec determines how the service is exposed to the network.
+
+![](../img/kubernetes-service.png)
+
+#### 1. ClusterIP
+•	ClusterIP is the default and most common service type.
+•	Kubernetes will assign a cluster-internal IP address to ClusterIP service. This makes the service only reachable within the cluster.
+•	You cannot make requests to service (pods) from outside the cluster.
+•	You can optionally set cluster IP in the service definition file.
+Use Cases: 
+•	Inter service communication within the cluster. For example, communication between the front-end and back-end components of your app.
+
+As Long as kube-dns is running, all service objects (including ClusterIP services) have an in cluster dns name: service_name + "." + service_namespace + ".svc.cluster.local", so all other things would address your backened service as http://service_name + "." + service_namespace + ".svc.cluster.local"
+
+#### 2. NodePort
+•	NodePort service is an extension of ClusterIP service. A ClusterIP Service, to which the NodePort Service routes, is automatically created.
+•	It exposes the service outside of the cluster by adding a cluster-wide port on top of ClusterIP.
+•	NodePort exposes the service on each Node’s IP at a static port (the NodePort). Each node proxies that port into your Service. So, external traffic has access to fixed port on each Node. It means any request to your cluster on that port gets forwarded to the service.
+•	You can contact the NodePort Service, from outside the cluster, by requesting <NodeIP>:<NodePort>.
+•	Node port must be in the range of 30000–32767. Manually allocating a port to the service is optional. If it is undefined, Kubernetes will automatically assign one.
+•	If you are going to choose node port explicitly, ensure that the port was not already used by another service.
+Use Cases: 
+•	When you want to enable external connectivity to your service.
+•	Using a NodePort gives you the freedom to set up your own load balancing solution, to configure environments that are not fully supported by Kubernetes, or even to expose one or more nodes’ IPs directly.
+•	Prefer to place a load balancer above your nodes to avoid node failure.
+
+### 3. LoadBalancer
+•	LoadBalancer service is an extension of NodePort service. NodePort and ClusterIP Services, to which the external load balancer routes, are automatically created.
+•	It integrates NodePort with cloud-based load balancers.
+•	It exposes the Service externally using a cloud provider’s load balancer.
+•	Each cloud provider (AWS, Azure, GCP, etc) has its own native load balancer implementation. The cloud provider will create a load balancer, which then automatically routes requests to your Kubernetes Service.
+•	Traffic from the external load balancer is directed at the backend Pods. The cloud provider decides how it is load balanced.
+•	The actual creation of the load balancer happens asynchronously.
+•	Every time you want to expose a service to the outside world, you have to create a new LoadBalancer and get an IP address.
+Use Cases
+•	When you are using a cloud provider to host your Kubernetes cluster.
+
+### 4. ExternalName
+•	Services of type ExternalName map a Service to a DNS name, not to a typical selector such as my-service.
+•	You specify these Services with the `spec.externalName` parameter.
+•	It maps the Service to the contents of the externalName field (e.g. foo.bar.example.com), by returning a CNAME record with its value.
+•	No proxying of any kind is established.
+Use Cases：
+•	This is commonly used to create a service within Kubernetes to represent an external datastore like a database that runs externally to Kubernetes.
+•	You can use that ExternalName service (as a local service) when Pods from one namespace to talk to a service in another namespace.
+
+### Ingress
+You can also use Ingress to expose your Service. Ingress is not a Service type, but it acts as the entry point for your cluster. It lets you consolidate your routing rules into a single resource as it can expose multiple services under the same IP address.
+
+For more about ingerss, please reger to [ingress](../ingress_nginx/Kubernetes%20Ingress%20Tutorial%20for%20Beginners.md)
+
+
 #### DNS
 Kubernetes offers a DNS cluster addon Service that automatically assigns dns names to other Services. You can check if it’s running on your cluster:
 kubectl get services kube-dns --namespace=kube-system
+
+For more details for kubernetes DNS, Please refer to [kubernetes DNS](../DNS/Kubernetes%20DNS.md)
 
 
 

@@ -9,6 +9,7 @@ services:
     environment:
       - SHARED_DIRECTORY=/data
     volumes:
-      - /data/nfs-storage:/data
+      # - /data/nfs-storage:/data
+      - G:\Temp\nfs-storage:/data
     ports:
       - 2049:2049

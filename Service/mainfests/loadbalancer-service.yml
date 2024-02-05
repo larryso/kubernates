@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-service-loadbalancer
+  namespace: tests
+  labels:
+    app: hello
+spec:
+  type: LoadBalancer
+  externalIPs:
+  - 192.168.1.13
+  selector:
+    app: hello
+  ports:
+  - port: 8082
+    targetPort: 8080
