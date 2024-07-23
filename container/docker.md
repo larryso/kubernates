@@ -15,6 +15,7 @@ usage: docker run [OPTIOS] IMAGE [COMMAND] [ARGS]
 ## docker volumne - container store data
 
 docker volume create [OPTIONS] [VOLUME]
+docker volume rm [VOLUME_NAME] -- to delete a volume
 
 [more details](https://docs.docker.com/engine/reference/commandline/volume_create/)
 
@@ -45,6 +46,14 @@ docker login
 docker tag 723390154dba larryso/my_ubuntu:v1.0
 
 docker push larryso/my_ubuntu:v1.0
+```
+
+## Stop and Delete container
+```
+docker stop <container_id_or_name>
+dokcer rm -f <container_id_or_name> --delete container
+
+docker rmi [OPTIONS] IMAGE [IMAGE...] - delete image
 ```
 
 
