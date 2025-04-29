@@ -128,7 +128,24 @@ Cert-manager automatically:
 3. Updates the kubernetes secret with the new certificate
 4. Can trigger rolling updates of pods using the certificate
      
+## Key Components in cert-manager
 
+### Cert-Manager-Controller 
+Cert-manager-controller is a core component of cert-manager, below is the responsibility of cert-manager-controller:
+1. watches for Certificate resources:
+   * Monitors Kubernetes for Certificate, CertificateRequest, Issuer/ClusterIssuer
+   * Trigger certificate Issuance or renew
+   * interact with Issuers (Let's Encrypt)
+   * Store Certificates as Secrets
+  
+cert-manager CA injector is a Kubernetes addon to automate the injection of CA data into
+webhooks and APIServices from cert-manager certificates.
+It will ensure that annotated webhooks and API services always have the correct
+CA data from the referenced certificates, which can then be used to serve API
+servers and webhook servers. [more details](https://cert-manager.io/docs/concepts/ca-injector/)
+
+Cert-manager webhook acts as a validationg and admission control that ensuring correct ness and security before changes are applied to the cluster.
+When a user applies a Certificates, Issuer, or releated resources, the Kubernetes API Server sends the request to cert-manager webhook for validation, webhook validates the request, if valid, API server persists the resource, if invalid, reject with error message
 
 
 ## Reference
